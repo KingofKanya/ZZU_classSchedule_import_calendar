@@ -1,4 +1,4 @@
-package org.example;
+package hdbb.example;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -6,26 +6,26 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.example.Main.arr;
-
 public class ProcessOriginalData {
-    //学期开始时间2023年2月13日   1676217600035  毫秒值
-    static long semesterSatrtTime=1676217600035L;
-    static long oneWeek=7L*24*3600*1000;
-    static long oneDay=24L*3600*1000;
-    static long oneHour=3600*1000L;
+    //郑州大学网络空间安全学院信息安全22级大一下学期 开学日期2023年2月13日   1676217600035  毫秒值
+    static long semesterSatrtTime = 1676217600035L;
+    static long oneWeek = 7L * 24 * 3600 * 1000;
+    static long oneDay = 24L * 3600 * 1000;
+    static long oneHour = 3600 * 1000L;
+
     static void analyseOriginalData(List<List<String>> originalData) {
         //System.out.println(originalData.size());--->11
-        //读取List<List<String>>中的单个数据,并处理
-        for (int classTime = 1; classTime < originalData.size(); classTime++) {//第一行没用
+        //读取List<List<String>>中的单个数据,也就是excel表中单个单元格的数据,并处理
+        for (int classTime = 1; classTime < originalData.size(); classTime++) {
+            //第一行没用
             List<String> classList = originalData.get(classTime);
-            for (int weekTime = 1; weekTime < classList.size(); weekTime++) {//第一列无用
+            for (int weekTime = 1; weekTime < classList.size(); weekTime++) {
+                //第一列无用
                 String singleData = classList.get(weekTime);
                 processSingleData(singleData, classTime, weekTime);
 
-                /*//testcode
+                /*//Test code
                 System.out.println("classTime:"+classTime+"  weekTime:"+weekTime);*/
-
             }
         }
     }
@@ -45,7 +45,7 @@ public class ProcessOriginalData {
 
         //weekTime星期几    classTime一天中的第几节
         singleData.replaceAll("[\\n\\t]+", " ");//删除输入字符串中的所有换行符和制表符
-        singleData="\""+singleData+"\"";
+        singleData = "\"" + singleData + "\"";
 
         Pattern pattern = Pattern.compile("\"([^\"]*?)\\(([^\\)]*?)\\) \\((.*?)\\)[\\s\\S]*?\\((.*?),(.*?)\\)");
 
@@ -59,7 +59,7 @@ public class ProcessOriginalData {
             //处理courseSchedule
             String[][] processedCourseSchedule = process_courseSchedule(courseSchedule);
             //result[][]中分别放weekType,startWeek,endWeek
-            new_Data(weekTime,classTime, processedCourseSchedule, courseName, courseCode, teacherName, courseLocation);
+            new_Data(weekTime, classTime, processedCourseSchedule, courseName, courseCode, teacherName, courseLocation);
 
             //test code
             System.out.print("Course week: 周" + weekTime);
@@ -79,55 +79,55 @@ public class ProcessOriginalData {
         //weekTime星期几    classTime一天中的第几节
         String summary = new String(courseName);
         String description = new String("老师:" + teacherName
-                +"地点:" + courseLocation
-                +"编码:" + courseCode);
+                + "地点:" + courseLocation
+                + "编码:" + courseCode);
 
         for (String[] eachWeekSchedule : processedCourseSchedule) {
 
-            if (eachWeekSchedule[0]==null) {//就是  单
-                if(eachWeekSchedule[2].equals("")){
-                    String[] timeDuring = getTimeDuring(courseCode,Integer.parseInt(eachWeekSchedule[1]),weekTime,classTime);
+            if (eachWeekSchedule[0] == null) {//就是  单
+                if (eachWeekSchedule[2].equals("")) {
+                    String[] timeDuring = getTimeDuring(courseCode, Integer.parseInt(eachWeekSchedule[1]), weekTime, classTime);
 
                     Data data = new Data(timeDuring[0], timeDuring[1], description, summary);
-                    arr.add(data);
-                }else {
+                    Main.arr.add(data);
+                } else {
                     //对周循环,newData,i代表周数
                     for (int i = Integer.parseInt(eachWeekSchedule[1]); i <= Integer.parseInt(eachWeekSchedule[2]); i++) {
-                        String[] timeDuring = getTimeDuring(courseCode,i,weekTime,classTime);
+                        String[] timeDuring = getTimeDuring(courseCode, i, weekTime, classTime);
 
                         Data data = new Data(timeDuring[0], timeDuring[1], description, summary);
-                        arr.add(data);
+                        Main.arr.add(data);
                     }
                 }
 
             } else if (eachWeekSchedule[0].equals("单")) {
-                if(eachWeekSchedule[2].equals("")){
-                    String[] timeDuring = getTimeDuring(courseCode,Integer.parseInt(eachWeekSchedule[1]),weekTime,classTime);
+                if (eachWeekSchedule[2].equals("")) {
+                    String[] timeDuring = getTimeDuring(courseCode, Integer.parseInt(eachWeekSchedule[1]), weekTime, classTime);
 
                     Data data = new Data(timeDuring[0], timeDuring[1], description, summary);
-                    arr.add(data);
-                }else {
+                    Main.arr.add(data);
+                } else {
                     //对周循环,newData,i代表周数
                     for (int i = Integer.parseInt(eachWeekSchedule[1]); i <= Integer.parseInt(eachWeekSchedule[2]); i++) {
-                        String[] timeDuring = getTimeDuring(courseCode,i,weekTime,classTime);
+                        String[] timeDuring = getTimeDuring(courseCode, i, weekTime, classTime);
 
                         Data data = new Data(timeDuring[0], timeDuring[1], description, summary);
-                        arr.add(data);
+                        Main.arr.add(data);
                     }
                 }
-            } else if(eachWeekSchedule[0].equals("双")){
-                if(eachWeekSchedule[2].equals("")){
-                    String[] timeDuring = getTimeDuring(courseCode,Integer.parseInt(eachWeekSchedule[1]),weekTime,classTime);
+            } else if (eachWeekSchedule[0].equals("双")) {
+                if (eachWeekSchedule[2].equals("")) {
+                    String[] timeDuring = getTimeDuring(courseCode, Integer.parseInt(eachWeekSchedule[1]), weekTime, classTime);
 
                     Data data = new Data(timeDuring[0], timeDuring[1], description, summary);
-                    arr.add(data);
-                }else {
+                    Main.arr.add(data);
+                } else {
                     //对周循环,newData,i代表周数
-                    for (int i = Integer.parseInt(eachWeekSchedule[1]); i <= Integer.parseInt(eachWeekSchedule[2]); i+=2) {
-                        String[] timeDuring = getTimeDuring(courseCode,i,weekTime,classTime);
+                    for (int i = Integer.parseInt(eachWeekSchedule[1]); i <= Integer.parseInt(eachWeekSchedule[2]); i += 2) {
+                        String[] timeDuring = getTimeDuring(courseCode, i, weekTime, classTime);
 
                         Data data = new Data(timeDuring[0], timeDuring[1], description, summary);
-                        arr.add(data);
+                        Main.arr.add(data);
                     }
                 }
             }
@@ -137,50 +137,49 @@ public class ProcessOriginalData {
 
     private static String[] getTimeDuring(String courseCode, int i, int weekTime, int classTime) {
         //weekTime星期几    classTime一天中的第几节   //对周循环,newData,i代表周数
-        String[] str=new String[2];
-        long courseLastingTime=getCourseTime(courseCode);
-        long courseStartTimeInDay=getCourseStartTimeInDay(classTime);
-        long start=semesterSatrtTime+(i-1)*oneWeek+(weekTime-1)*oneDay+courseStartTimeInDay;
-        long end=start+courseLastingTime;
-        String[] s=transferLongToString(start,end);
+        String[] str = new String[2];
+        long courseLastingTime = getCourseTime(courseCode);
+        long courseStartTimeInDay = getCourseStartTimeInDay(classTime);
+        long start = semesterSatrtTime + (i - 1) * oneWeek + (weekTime - 1) * oneDay + courseStartTimeInDay;
+        long end = start + courseLastingTime;
+        String[] s = transferLongToString(start, end);
         return s;
     }
 
     private static String[] transferLongToString(long start, long end) {
-        String[] s=new String[2];
-        Date d=new Date(start);
-        SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
-        s[0]= sdf.format(d);
-        Date d2=new Date(end);
-        SimpleDateFormat sdf2=new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
-        s[1]= sdf2.format(d2);
+        String[] s = new String[2];
+        Date d = new Date(start);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
+        s[0] = sdf.format(d);
+        Date d2 = new Date(end);
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
+        s[1] = sdf2.format(d2);
         return s;
     }
 
     private static long getCourseStartTimeInDay(int classTime) {
-        long t=switch(classTime){
-            case 1->8*oneHour;
-            case 2->8*oneHour;//
-            case 3->10*oneHour+10*60*1000L;
-            case 4->8*oneHour;//
-            case 5->14*oneHour;
-            case 6->8*oneHour;//
-            case 7->16*oneHour;
-            case 8->8*oneHour;//
-            case 9->19*oneHour;
-            case 10->8*oneHour;//
-            default ->0L;
+        long t = switch (classTime) {
+            case 1 -> 8 * oneHour;
+            case 2 -> 8 * oneHour;//
+            case 3 -> 10 * oneHour + 10 * 60 * 1000L;
+            case 4 -> 8 * oneHour;//
+            case 5 -> 14 * oneHour;
+            case 6 -> 8 * oneHour;//
+            case 7 -> 16 * oneHour;
+            case 8 -> 8 * oneHour;//
+            case 9 -> 19 * oneHour;
+            case 10 -> 8 * oneHour;//
+            default -> 0L;
         };
         return t;
     }
 
     private static long getCourseTime(String courseCode) {//根据课程id获得一节课的长度
-        long t=switch (courseCode){
-            case "211007.20","211017.25","221001.02","321002.J2"
-                    ,"371015.D9","397005.H6","491002.21","772031.01"
-                    ,"772032.01","772158.01","981001.01"
-                    ->100*60*1000L;
-            case "371022.H9"->45*60*1000L;
+        long t = switch (courseCode) {
+            case "211007.20", "211017.25", "221001.02", "321002.J2"
+                    , "371015.D9", "397005.H6", "491002.21", "772031.01"
+                    , "772032.01", "772158.01", "981001.01" -> 100 * 60 * 1000L;
+            case "371022.H9" -> 45 * 60 * 1000L;
 
             default -> 0L;
         };
