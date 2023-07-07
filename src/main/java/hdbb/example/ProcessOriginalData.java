@@ -7,7 +7,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ProcessOriginalData {
-    //郑州大学网络空间安全学院信息安全22级大一下学期 开学日期2023年2月13日   1676217600035  毫秒值
+    //郑州大学网络空间安全学院信息安全22级大一下学期 开学日期2023年02月13日   1676217600035  毫秒值
+    //郑州大学网络空间安全学院信息安全22级大二上学期 开学日期2023年09月11日
     static long semesterSatrtTime = 1676217600035L;
     static long oneWeek = 7L * 24 * 3600 * 1000;
     static long oneDay = 24L * 3600 * 1000;
@@ -19,6 +20,7 @@ public class ProcessOriginalData {
         for (int classTime = 1; classTime < originalData.size(); classTime++) {
             //第一行没用
             List<String> classList = originalData.get(classTime);
+            //获取第classTime节课的行,开始处理列
             for (int weekTime = 1; weekTime < classList.size(); weekTime++) {
                 //第一列无用
                 String singleData = classList.get(weekTime);
@@ -157,10 +159,15 @@ public class ProcessOriginalData {
         return s;
     }
 
+    /**
+     *
+     * @param classTime 课程在一天中开始的节次
+     * @return  课程在一天中的开始时间
+     */
     private static long getCourseStartTimeInDay(int classTime) {
         long t = switch (classTime) {
             case 1 -> 8 * oneHour;
-            case 2 -> 8 * oneHour;//
+            case 2 -> 8 * oneHour;//没这样的课程安排,就没改
             case 3 -> 10 * oneHour + 10 * 60 * 1000L;
             case 4 -> 8 * oneHour;//
             case 5 -> 14 * oneHour;
