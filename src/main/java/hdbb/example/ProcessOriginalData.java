@@ -32,10 +32,15 @@ public class ProcessOriginalData {
         }
     }
 
+    /**
+     *处理单个单元格数据
+     * @param singleData    单个数据表文本
+     * @param classTime 课程在一天的节次
+     * @param weekTime  星期几
+     */
     private static void processSingleData(String singleData, int classTime, int weekTime) {
-        /*//对于军事理论这课,格式是军事理论(981001.01) (没有老师)
-        //
-        //
+        //singleData应该由用户手动修改过,详见README.md
+
         //(1-8,北区9_305)
         //不能很好匹配,要在excel中手动加入*/
 
@@ -45,7 +50,6 @@ public class ProcessOriginalData {
         //(13,北区9_105)
         //两个安排单独考虑
 
-        //weekTime星期几    classTime一天中的第几节
         singleData.replaceAll("[\\n\\t]+", " ");//删除输入字符串中的所有换行符和制表符
         singleData = "\"" + singleData + "\"";
 
@@ -61,7 +65,8 @@ public class ProcessOriginalData {
             //处理courseSchedule
             String[][] processedCourseSchedule = process_courseSchedule(courseSchedule);
             //result[][]中分别放weekType,startWeek,endWeek
-            new_Data(weekTime, classTime, processedCourseSchedule, courseName, courseCode, teacherName, courseLocation);
+            new_Data(weekTime, classTime, processedCourseSchedule,
+                    courseName, courseCode, teacherName, courseLocation);
 
             //test code
             System.out.print("Course week: 周" + weekTime);
@@ -78,7 +83,6 @@ public class ProcessOriginalData {
 
     private static void new_Data(int weekTime, int classTime, String[][] processedCourseSchedule, String courseName,
                                  String courseCode, String teacherName, String courseLocation) {
-        //weekTime星期几    classTime一天中的第几节
         String summary = new String(courseName);
         String description = new String("老师:" + teacherName
                 + "地点:" + courseLocation
@@ -181,7 +185,13 @@ public class ProcessOriginalData {
         return t;
     }
 
-    private static long getCourseTime(String courseCode) {//根据课程id获得一节课的长度
+    /**
+     *
+     * @param courseCode 课程id
+     * @return  此课程的持续时间(毫秒值)
+     */
+    private static long getCourseTime(String courseCode) {
+        //目前有网安院22级大一下数据
         long t = switch (courseCode) {
             case "211007.20", "211017.25", "221001.02", "321002.J2"
                     , "371015.D9", "397005.H6", "491002.21", "772031.01"
@@ -192,15 +202,6 @@ public class ProcessOriginalData {
         };
         return t;
     }
-
-    /*private static String getOriginalDataByPath() throws IOException {
-        FileInputStream fis = new FileInputStream
-                ("C:\\Users\\ASUS\\Downloads\\t.txt");
-        byte[] bytes = new byte[60000];
-        int length = fis.read(bytes);
-        return new String(bytes, 0, length);
-        //从课程表数据看
-    }*/
 
     private static String[][] process_courseSchedule(String courseSchedule) {
         String[] parts = courseSchedule.split("\\s+");//匹配任意空白字符
