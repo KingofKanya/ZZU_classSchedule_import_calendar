@@ -42,7 +42,7 @@ public class ProcessOriginalData {
         //singleData应该由用户手动修改过,详见README.md
 
         //(1-8,北区9_305)
-        //不能很好匹配,要在excel中手动加入*/
+        //不能很好匹配,要在excel中手动加入
 
         //《“四史”教育专题》(397005.H6) (刘艳芳)
         //(5-8,北区9_105)
